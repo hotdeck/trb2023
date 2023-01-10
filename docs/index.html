@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Regional Variation in the Effects of Built Environment on Driving</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Liming Wang" />
+    <meta name="date" content="2023-01-11" />
+    <script src="libs/header-attrs-2.18/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/fc.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/fc-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Regional Variation in the Effects of Built Environment on Driving
+]
+.subtitle[
+## A Reproducible Research Project
+]
+.author[
+### Liming Wang
+]
+.institute[
+### Portland State University
+]
+.date[
+### January 11, 2023
+]
+
+---
+
+
+
+
+# Motivation and Research Questions
+
+- Numerous previous studies focusing on producing point estimates of effects (elasticities) and ended up with a wide range of estimates for the elasticity of the built environment on travel outcomes. 
+  - For example, In the papers reviewed in Ewing &amp; Cervero (2010), estimates for elasticity of Vehicle Miles Traveled with respect to population density range from -1.05 to +0.03 (with weighted average=-0.04)
+
+- How do we reconcile these different estimates? 
+  - Most previous studies use data from a single region, collected by different agencies
+  - Used different models, sometimes with different dependent/independent variables
+  - Regional variation?
+
+???
+None of the research reviewed by Ewing &amp; Cervero followed reproducible research practice, so they had to extract the point estimates from each papers and synthesizes those estimates in their meta analysis to come up with the weighted average
+
+---
+
+# Data and Methods
+
+- Data used including  the 2009 U.S. National Household Travel Survey (NHTS) and high- resolution built environment measures from the EPA Smart Location Database (SLD)
+  - NHTS Socio-demographic characteristics
+  - NHTS Travel behavior outcomes, including household VMT on survey day
+  - SLD Diverse set of built environment measures organized by 5D
+
+- Include 44,000 households across 100 UZAs with at least 30 valid household observations in the survey
+
+---
+
+# Descriptives
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="figs/uza-hist.png" alt="Histograms of UZA-level weighted average VMT and Number of household obser- vations by UZA" width="95%" height="40%" /&gt;
+&lt;p class="caption"&gt;Histograms of UZA-level weighted average VMT and Number of household obser- vations by UZA&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Methods/Models
+
+- Fixed Effects Models
+
+`$$\begin{equation}\begin{split}\Pr(VMT_{iu}=0) = \frac{\exp(V_{iu})}{1 + \exp(V_{iu})}, \\ \text{where } V_{iu} = \alpha_{u} + \beta X_{iu}^{SES} + \gamma_u X_{iu}^{BE}\end{split}\end{equation}$$`
+`$$\begin{equation}\log(VMT_{iu}) \sim N(a_{u} + b X_{iu}^{SES} + c_u X_{iu}^{BE}, \sigma) \\ \text{ for } VMT_{iu} &gt; 0\end{equation}$$`
+
+- Mixed Effect Models
+
+`$$\begin{equation}\begin{split}V_{iu} = \alpha_{iu} + \beta X_{iu}^{SES} + \gamma_{iu} X_{iu}^{BE}, \\ \text{where } \alpha_{iu} \sim N(\bar{\alpha}, \sigma_{\alpha}), \\ \text{and } \gamma_{iu} \sim N(\bar{\gamma}, \Sigma_{\gamma}) \end{split} \end{equation}$$`
+
+`$$\begin{equation} \begin{split} VMT_{iu} \sim N(a_{iu} + b X_{iu}^{SES} + c X_{iu}^{BE}, \sigma), \\ \text{where } a_{iu} \sim N(\bar{a}, \sigma_{a}), \\ \text{and } c_{iu} \sim N(\bar{c}, \Sigma_{c}) \end{split} \end{equation}$$`
+
+---
+
+# Findings (1)
+
+.pull-left-30[
+- For the elasticity of VMT wrt population density (D1B), the fixed effect log-linear model estimates a mean of **-0.086** (median = -0.018), which is in line with Ewing &amp; Cervero’s weight average of -0.04
+But statistical test between fixed effect base model (no UZA-specific slopes) vs full fixed effect model shows full fixed effect model has superior model fit (likelihood ratio test `\(\chi^2\)`=1620.883, p &lt; 0.000), although most UZA-specific coefficients are not significant.
+]
+
+.pull-right-70[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="figs/fixed-coeffs-viz2-2.png" alt="Point estimates and confidence intervals for D1B (population density) variable by UZA" width="90%" height="90%" /&gt;
+&lt;p class="caption"&gt;Point estimates and confidence intervals for D1B (population density) variable by UZA&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+# Findings (2)
+
+.pull-left-30[
+- Test between base mixed effect models (with random intercept only) vs full model (with both random slopes and intercepts) shows the full model performs better. Notably, in the mixed effect model, all fixed effect coefficients for 5D variables are not significant.
+]
+
+.pull-right-70[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="figs/mixed-coeffs-viz2-2.png" alt="Random coefficients for D1B variable by UZA" width="90%" height="90%" /&gt;
+&lt;p class="caption"&gt;Random coefficients for D1B variable by UZA&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+# Conclusions
+
+Conclusions: Using a single/unified nation-wide dataset, I show that there is significant regional variation in the estimates of built-environment effects on VMT, even as the mean/median in line with synthesized weighted average, although estimates of UZA-specific effect are mostly unusable. Mixed-effect model provides a solution to the problem. After considering random effects, there is no statistically significant fixed effects.
+
+Implication: Maybe we should not have been so fixated with producing a single estimate after all?
+
+---
+
+# Experience on Reproducible Research
+
+- The work conducted for the project using R and the `tidyverse` suite of packages, reproducible from raw data to final products
+
+- Project reports and papers written using RMarkdown
+  - including my TRB paper and the RMarkdown is available at https://github.com/cities/nhts-mxlm
+  
+- Product of the project including an open source R package `VETravelDemandMM` (https://github.com/cities-lab/VETravelDemandMM) contributed to the VisionEval project (https://visioneval.org)
+
+---
+
+# Tidy workflow and R for Reproducible Research
+
+![tidy workflow](https://r4ds.hadley.nz/diagrams/data-science/base.png)
+Credit: [Wickham and Grolemund, 2023](https://r4ds.hadley.nz/)
+
+---
+
+# Reflections on Reproducible Research
+
+- Personally cannot imagine (myself) doing research any other way: "You have at least one collaborator for any project - yourself in 3 months"
+
+- Making source code available can only go so far; live documentation and literal programming is an essential, but often neglected, step in reproducible research.
+
+- Tools (in R, Python) supporting reproducible research have improved tremendously over the last a few years, but the learning curve is still steep and most students and researchers have not been trained or exposed in reproducible research.
+
+- Combining reproducible research with open data facilitates dissemination of research and speeds up scientific investigation
+
+---
+
+# Questions + Acknowledgements
+
+
+Liming Wang, PhD &lt;br&gt;
+Associate Professor &lt;br&gt;
+Toulan School of Urban Studies and Planning&lt;br&gt;
+Portland State University&lt;br&gt;
+lmwang@pdx.edu&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+Partial financial support from NITC-1433 and ODOT SPR-788 is acknowledged.
+
+&lt;img src="figs/NITC.jpg" width="49%" height="20%" /&gt;&lt;img src="figs/ODOT.jpg" width="49%" height="20%" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
