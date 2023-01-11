@@ -3,9 +3,9 @@
   <head>
     <title>Regional Variation in the Effects of Built Environment on Driving</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Liming Wang" />
+    <meta name="author" content="Liming Wang, PhD" />
     <meta name="date" content="2023-01-11" />
-    <script src="libs/header-attrs-2.18/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/fc.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/fc-fonts.css" rel="stylesheet" />
@@ -21,7 +21,7 @@ class: center, middle, inverse, title-slide
 ## A Reproducible Research Project
 ]
 .author[
-### Liming Wang
+### Liming Wang, PhD
 ]
 .institute[
 ### Portland State University
@@ -52,12 +52,12 @@ None of the research reviewed by Ewing &amp; Cervero followed reproducible resea
 
 # Data and Methods
 
-- Data used including  the 2009 U.S. National Household Travel Survey (NHTS) and high- resolution built environment measures from the EPA Smart Location Database (SLD)
+- Data used including the 2009 U.S. National Household Travel Survey (NHTS) and high- resolution built environment measures from the EPA Smart Location Database (SLD)
   - NHTS Socio-demographic characteristics
   - NHTS Travel behavior outcomes, including household VMT on survey day
-  - SLD Diverse set of built environment measures organized by 5D
+  - SLD Diverse set of built environment measures organized by 5D variables
 
-- Include 44,000 households across 100 UZAs with at least 30 valid household observations in the survey
+- Include 44,000 households across 100 UZAs
 
 ---
 
@@ -77,7 +77,7 @@ None of the research reviewed by Ewing &amp; Cervero followed reproducible resea
 `$$\begin{equation}\begin{split}\Pr(VMT_{iu}=0) = \frac{\exp(V_{iu})}{1 + \exp(V_{iu})}, \\ \text{where } V_{iu} = \alpha_{u} + \beta X_{iu}^{SES} + \gamma_u X_{iu}^{BE}\end{split}\end{equation}$$`
 `$$\begin{equation}\log(VMT_{iu}) \sim N(a_{u} + b X_{iu}^{SES} + c_u X_{iu}^{BE}, \sigma) \\ \text{ for } VMT_{iu} &gt; 0\end{equation}$$`
 
-- Mixed Effect Models
+- Hierarchical Mixed Effect Models
 
 `$$\begin{equation}\begin{split}V_{iu} = \alpha_{iu} + \beta X_{iu}^{SES} + \gamma_{iu} X_{iu}^{BE}, \\ \text{where } \alpha_{iu} \sim N(\bar{\alpha}, \sigma_{\alpha}), \\ \text{and } \gamma_{iu} \sim N(\bar{\gamma}, \Sigma_{\gamma}) \end{split} \end{equation}$$`
 
@@ -88,8 +88,8 @@ None of the research reviewed by Ewing &amp; Cervero followed reproducible resea
 # Findings (1)
 
 .pull-left-30[
-- For the elasticity of VMT wrt population density (D1B), the fixed effect log-linear model estimates a mean of **-0.086** (median = -0.018), which is in line with Ewing &amp; Cervero’s weight average of -0.04
-But statistical test between fixed effect base model (no UZA-specific slopes) vs full fixed effect model shows full fixed effect model has superior model fit (likelihood ratio test `\(\chi^2\)`=1620.883, p &lt; 0.000), although most UZA-specific coefficients are not significant.
+- For the elasticity estimate of VMT wrt population density (D1B) = **-0.086** in pooled fixed effect model, in line with Ewing &amp; Cervero’s estimate of -0.04
+- Likelihood ratio test rejects the fixed effect model (no UZA-specific slopes) and favors the full fixed effect model with UZA-specific coefficient ( `\(\chi^2\)`=1620.883, p &lt; 0.000), although most UZA-specific coefficients are not significant.
 ]
 
 .pull-right-70[
@@ -104,7 +104,8 @@ But statistical test between fixed effect base model (no UZA-specific slopes) vs
 # Findings (2)
 
 .pull-left-30[
-- Test between base mixed effect models (with random intercept only) vs full model (with both random slopes and intercepts) shows the full model performs better. Notably, in the mixed effect model, all fixed effect coefficients for 5D variables are not significant.
+- Likelihood ratio test also favors full mixed effect model with both random slopes and intercepts (p&lt;0.0000).
+- Notably, in the mixed effect model, all fixed effect coefficients for 5D variables are not significant.
 ]
 
 .pull-right-70[
@@ -116,11 +117,17 @@ But statistical test between fixed effect base model (no UZA-specific slopes) vs
 
 ---
 
-# Conclusions
+# Conclusions and Discussion
 
-Conclusions: Using a single/unified nation-wide dataset, I show that there is significant regional variation in the estimates of built-environment effects on VMT, even as the mean/median in line with synthesized weighted average, although estimates of UZA-specific effect are mostly unusable. Mixed-effect model provides a solution to the problem. After considering random effects, there is no statistically significant fixed effects.
+## Conclusions 
+- Significant regional variation in the estimates of built-environment effects on VMT, even as the mean estimate in line with synthesized weighted average
+- With NHTS and SLD data, estimates of UZA-specific effect are mostly unusable (highly variable and statistically insignificant)
+- Mixed-effect model provides a solution to the problem by allowing partial pooling
+- After considering random effects, there is no statistically significant fixed effects.
 
-Implication: Maybe we should not have been so fixated with producing a single estimate after all?
+## Implications
+- Maybe we should not have been so fixated with producing a single estimate after all?
+- Both sides of the debate miss some part of the big picture
 
 ---
 
@@ -131,7 +138,7 @@ Implication: Maybe we should not have been so fixated with producing a single es
 - Project reports and papers written using RMarkdown
   - including my TRB paper and the RMarkdown is available at https://github.com/cities/nhts-mxlm
   
-- Product of the project including an open source R package `VETravelDemandMM` (https://github.com/cities-lab/VETravelDemandMM) contributed to the VisionEval project (https://visioneval.org)
+- Product of the project including an open source R package `VETravelDemandMM` (https://github.com/cities-lab/VETravelDemandMM) contributed to the VisionEval project (https://visioneval.org), a strategic planning model under active development led by FHWA.
 
 ---
 
@@ -144,9 +151,9 @@ Credit: [Wickham and Grolemund, 2023](https://r4ds.hadley.nz/)
 
 # Reflections on Reproducible Research
 
-- Personally cannot imagine (myself) doing research any other way: "You have at least one collaborator for any project - yourself in 3 months"
+- Personally, I cannot imagine (myself) doing research any other way; "You have at least one collaborator for any project - at the very least, yourself in 3 months".
 
-- Making source code available can only go so far; live documentation and literal programming is an essential, but often neglected, step in reproducible research.
+- Making code available can only go so far; live documentation and literal programming is an essential, but often neglected, step in reproducible research.
 
 - Tools (in R, Python) supporting reproducible research have improved tremendously over the last a few years, but the learning curve is still steep and most students and researchers have not been trained or exposed in reproducible research.
 
